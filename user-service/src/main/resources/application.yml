@@ -10,9 +10,8 @@ spring:
       settings:
         web-allow-others: true
       path: /h2-console
-  datasource:
+  datasource: # DB 테이블 자동생성을 위해서는 datasource가 필요하다.
     driver-class-name: org.h2.Driver  # Database를 H2로 사용하겠다.
-#    url: jdbc:h2:~/test  # H2 접속 정보
 #    url: jdbc:h2:~/test  # H2 접속 정보
     url: jdbc:h2:mem:testdb
     username: sa  # H2 접속 시 입력할 username 정보 (원하는 것으로 입력)
