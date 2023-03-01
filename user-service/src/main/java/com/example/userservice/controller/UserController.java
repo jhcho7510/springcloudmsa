@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user-service")
+@RequestMapping("/")
 public class UserController {
     private Environment environment;
     private Greeting greeting;
@@ -63,6 +63,7 @@ public class UserController {
     @GetMapping("/welcome")
     public String welcome() {
         return greeting.getMessage();
+        //return "Welcome message";
     }
 
     /**
