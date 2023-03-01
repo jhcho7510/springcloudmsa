@@ -30,10 +30,18 @@ eureka:
 greeting:
   message: Welcome to the Simple E-commerce.
 
-token:
-  expiration_time: 86400000
-  secret: user_token
+
+# move to spring-cloud-config-server 'config-service'
+#token:
+#  expiration_time: 86400000
+#  secret: user_token
 
 logging:
   level:
     com.example.userservice: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans

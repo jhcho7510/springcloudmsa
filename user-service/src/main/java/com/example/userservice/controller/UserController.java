@@ -51,11 +51,11 @@ public class UserController {
     public String status() {
         return String.format("It's Working in User Service"
                 + ", port(local.server.port)=" + environment.getProperty("local.server.port")
-//                + ", port(server.port)=" + environment.getProperty("server.port")
-//                + ", gateway ip=" + environment.getProperty("gateway.ip")
-//                + ", message=" + environment.getProperty("greeting.message")
-//                + ", token secret=" + environment.getProperty("token.secret")
-//                + ", token expiration time=" + environment.getProperty("token.expiration_time")
+                + ", port(server.port)=" + environment.getProperty("server.port")
+                + ", gateway ip=" + environment.getProperty("gateway.ip")
+                + ", message=" + environment.getProperty("greeting.message")
+                + ", token secret=" + environment.getProperty("token.secret")
+                + ", token expiration time=" + environment.getProperty("token.expiration_time")
         );
 
     }
