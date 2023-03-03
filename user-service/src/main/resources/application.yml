@@ -4,18 +4,23 @@ server:
 spring:
   application:
     name: user-service
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
   h2:
     console:
       enabled: true
       settings:
         web-allow-others: true
       path: /h2-console
-  datasource: # DB 테이블 자동생성을 위해서는 datasource가 필요하다.
-    driver-class-name: org.h2.Driver  # Database를 H2로 사용하겠다.
-#    url: jdbc:h2:~/test  # H2 접속 정보
-    url: jdbc:h2:mem:testdb
-    username: sa  # H2 접속 시 입력할 username 정보 (원하는 것으로 입력)
-    password:  # H2 접속 시 입력할 password 정보 (원하는 것으로 입력)
+# move to config-service : 어플리케이션의 bootstrap.yml 파일로 내용 이관.
+#  datasource: # DB 테이블 자동생성을 위해서는 datasource가 필요하다.
+#    driver-class-name: org.h2.Driver  # Database를 H2로 사용하겠다.
+#    url: jdbc:h2:mem:testdb #    url: jdbc:h2:~/test  # H2 접속 정보
+#    username: sa  # H2 접속 시 입력할 username 정보 (원하는 것으로 입력)
+#    password:  # H2 접속 시 입력할 password 정보 (원하는 것으로 입력)
 
 
 eureka:
@@ -44,4 +49,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans
+        include: refresh, health, beans, busrefresh

@@ -1,0 +1,18 @@
+#user-service 어플리케인션의 application.yml파일의 내용중 datasource관련 내용이 현재 파일로 이관된다.
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    # 1234
+    # 대칭키 password: '{cipher}d64f87f04bc3531f1b818d374f29e73dd16ddaa67bfd43f52be09b626f9e5391'
+    # 아래는 비대칭 키
+    password: '{cipher}AQBQpNAoCqBinKylJn1f0pWF+xqmkSZRzmGO37FTvOgdpgvMuWtccI+fRehZZcAOhL/ZrHV+w5sf/av0/xgc667mWPNp8RhnXRnGAtKJekQaxTHAtHBY90fK/wU6f029qD/VF0glUCIqmvPwEwYOJc2s8BsPGYj+BbRdwLU1FiHzoRaHI2dix7yXaUMc/5uLPN972JTMhlOhp5oIovbRmwkdmmexD1DKqZkrq9L9k7mM9+Nq0R9UVJXQo3+oefibjdLX2DkNaDmAy6i8sGowNE2XDVITS4x7BCJgOhEenuyhksEcEMbahLwLvAHrRxnr2lo6+nhfTcjGI3+TadwDbkNwZMXlpCoh69XyNDXo/JuKYvnCeRGW53mI/Bc7Dfr+09o='
+
+token:
+  expiration_time: 86400000
+  # secret: user_token_native_user_service
+  secret: '{cipher}AQAmC61v4+8j3zcwyhiNlq7qdrRXxC+DysD6gMyGCLXamU8Tln/zfjiNIl4TUYJhNsc6k/3Qjsjf6qsj0rye9dxXBfDdLtcVZvFEv0+HgK8Ess2ppbULYZEmXtl67BMjaiRS2+F2xs+smPtozLFr9c+hPghqo2cCEpnPOwAxYj5s1AMcXvmKzo35REsn8rVi5EqWEG478DCbRDMVb4miSx6wQBS3chNx+tD2ixJwtmeAbN6a0j4tpDXn5sjTiTU/e8+CY/8CiPJHcXS6HQ23Gc+ryD1o9MuNtCWRqMF10uSjFZqLN2IivQJB3tN540pYwnQP5ufLTNyxCo9KVOlSZodXdF5DLTh4tbBoWCwWT66ZKJWV1E49svREbJnfVKHs1jmbRgLaHBzgR20LrvCv2KjP'
+
+gateway:
+  ip: 192.168.25.47

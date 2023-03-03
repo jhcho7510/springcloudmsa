@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    config:
+      uri: http://127.0.0.1:8888
+      # name에 기술된 이름의 .yml파일을 읽어 오는데, 현재 config-service.yml 파일이 없으므로 기본 값인 application.yml파일을 읽어온다.
+      # 관련 파일은 config-service 어플리케이션에서 지정한 경로에 있다.(application.yml) search-locations: file://${user.home}/springcloudmsa/native-file-repo
+      # name: config-service -> 주석의 내용이 처리되었다면, native-file-repo 디렉토리에는 config-service.yml파일이 없으므로 application.yml파일이 읽혀진다.
+      name: ecommerce
+#  profiles:
+#    active: dev
+#  -Dspring.profiles.active=dev : profiles정보 VM Option에서 사용할 때..

@@ -1,0 +1,16 @@
+# 아래내용(spring.cloud.config.**)은 없어도 될거 같음 나중에 테스트해보고 필요없으면 제거 합시다. 2023.03.04 jhcho
+#spring:
+#  cloud:
+#    config:
+#      uri: http://127.0.0.1:8888
+#      name: user-service # 현재 어플리케이션의 resources 디렉토리 하위의 user-service.yml파일을 읽어 들인다. 아무것도 기재 안하면 default로 application.yml파일을 읽어 들인다.
+
+# encrypt.key 속성이 기술되어야 encrypt, decrypt 내용이 있어야 작동함. 'encrypt' localhost:8888/encrypt, localhost:8888/decrypt
+encrypt:
+  #  key: abcdefghijklmnopqrstuvwxyz0123456789
+  key-store:
+    location: file://${user.home}/springcloudmsa/keystore/apiEncryptionKey.jks
+    #    location: file:/apiEncryptionKey.jks
+    #    location: file:///apiEncryptionKey.jks
+    password: test1234
+    alias: apiEncryptionKey

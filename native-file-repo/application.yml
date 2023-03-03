@@ -1,0 +1,9 @@
+# application.yml 파일이 default 파일이라, ecommerce.yml, user-service.yml 파일들에서 동일하게 사용되는 속성이 있다면, 대표로 application.yml파일에 기술하면 된다.
+# http://localhost:8888/ecommerce/default, http://localhost:8888/user-service/default 로 확인을 해보면, appliation.yml 관련 내용은 하단에 모두 포함된 것을 확인 할 수 있다.
+
+token:
+  expiration_time: 86400000
+  secret: user_token_native_application_changed_#2
+
+gateway:
+  ip: 192.168.25.47
