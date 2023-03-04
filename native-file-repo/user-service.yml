@@ -16,3 +16,10 @@ token:
 
 gateway:
   ip: 192.168.25.47
+
+order_service:
+  # url: http://127.0.0.1:8000/order-service/%s/orders 
+  url: http://ORDER-SERVICE/order-service/%s/orders #첫번째 order-service는 Mircroservice name, 그 다음부터는 URI
+  exception:
+    orders_is_empty: User's Orders is empty.
+
