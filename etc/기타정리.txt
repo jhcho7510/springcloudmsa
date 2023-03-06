@@ -13,9 +13,11 @@
   
   . Producer(메시지 생산)
     - junhyoungcho@JUNHYOUNGui-iMac kafka_2.13-3.4.0 % ./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic quickstart-events
+      ./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic my_topic_users
 
   . Consumer(구독)    
     - junhyoungcho@JUNHYOUNGui-iMac kafka_2.13-3.4.0 % ./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic quickstart-events --from-beginning
+    ./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my_topic_users --from-beginning
 
 [2] Kafka Connect  
   . Kafka Connect 설치
@@ -34,3 +36,45 @@
     - plugin.path=[confluentinc-kafka-connect-jdbc-10.0.1 폴더]
     - JdbcSourceConnector에서 MariaDB 사용하기 위해 mariadb 드라이버 복사
     - ./share/java/kafka/ 폴더에 mariadb-java-client-2.7.2.jar  파일 복사
+
+
+[3] Kafka 데이터 동기화 관련 mariadb 테이블 생성정보
+create table users(
+    id int auto_increment primary key,
+    user_id varchar(20),
+    pwd varchar(20),
+    name varchar(20),
+    created_at datetime default NOW()
+);
+
+
+insert into users(user_id, pwd, name) values('user1','test1111','dotori');
+
+
+insert into users(user_id, pwd, name) values('user2','test2222','kokoyeosa');
+
+insert into users(user_id, pwd, name) values('user3','test3333','sharalra');
+
+
+select * from users;
+
+
+create table orders (
+
+  id int auto_increment primary key,
+
+  user_id varchar(50) not null,
+
+  product_id varchar(20) not null,
+
+  order_id varchar(50) not null,
+
+  qty int default 0,
+
+  unit_price int default 0,
+
+  total_price int default 0,
+
+  created_at datetime default now()
+
+)    
