@@ -78,3 +78,31 @@ create table orders (
   created_at datetime default now()
 
 )    
+
+[4] zipkin
+  1. 다운로드 
+    - curl -sSL https://zipkin.io/quickstart.sh | bash -s
+  2. 실행
+    - java -jar zipkin.jar
+
+[5] docker
+  1. mariadb 도커 컨테이너 실행 및 기능
+    - docker exec -it mariadb /bin/bash    
+      root@069939e899e6:/# mysql -uroot -p -h127.0.0.1
+      MariaDB [(none)]> show databases;
+      MariaDB [(none)]> create database mydb;
+
+  2. user-service의 Dockerfile 내용
+    - FROM openjdk:17-ea-11-jdk-slim
+      VOLUME /tmp
+      COPY target/user-service-1.0.jar UserService.jar
+      ENTRYPOINT ["java", "-jar", "UserService.jar"]      
+  
+  3. maven Testcode 생략하고 빌드하기
+    - mvn clean compile package -DskipTests=true
+      : -DskipTests=true 을 기술하면, 테스트 코드를 생략해서 빌드가 빠르다. 사용하자.
+
+  4. docker 이미지처리
+    - docker build -t jhcho7510/user-service:1.0 . --> 이미지를 빌드 처리
+    - docker push jhcho7510/user-service:1.0  --> 생성한 이미지를 Docker hub사이트에 업로드
+    - docker push jhcho7510/user-service:1.0  --> Docker hub사이트의 이미지를 다운로드    

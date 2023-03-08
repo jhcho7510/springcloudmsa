@@ -50,6 +50,7 @@ public class OrderController {
     @PostMapping("/{userId}/orders")
     public ResponseEntity<ResponseOrder> createOrder(@PathVariable("userId") String userId,
                                                      @RequestBody RequestOrder orderDetails) {
+        log.info("Before add orders data");
 
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -58,20 +59,22 @@ public class OrderController {
         orderDto.setUserId(userId);
 
         /* jpa */
-//        OrderDto createdOrder = orderService.createOrder(orderDto);
-//        ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
+        OrderDto createdOrder = orderService.createOrder(orderDto);
+        ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
 
-        /* kafka */
-        orderDto.setOrderId(UUID.randomUUID().toString());
-        orderDto.setTotalPrice(orderDetails.getQty() * orderDetails.getUnitPrice());
+//        /* kafka */
+//        orderDto.setOrderId(UUID.randomUUID().toString());
+//        orderDto.setTotalPrice(orderDetails.getQty() * orderDetails.getUnitPrice());
+//
+//
+//        /* send this order to the kafka */
+//        kafkaProducer.send("example-catalog-topic",orderDto);
+//        orderProducer.send("orders", orderDto);
+//
+//        ResponseOrder responseOrder = mapper.map(orderDto, ResponseOrder.class);
 
 
-        /* send this order to the kafka */
-        kafkaProducer.send("example-catalog-topic",orderDto);
-        orderProducer.send("orders", orderDto);
-
-        ResponseOrder responseOrder = mapper.map(orderDto, ResponseOrder.class);
-
+        log.info("After added orders data");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
 
     }
@@ -85,6 +88,7 @@ public class OrderController {
         orderList.forEach(v -> {
             result.add(new ModelMapper().map(v, ResponseOrder.class));
         });
+        log.info("After retrieve orders data");
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

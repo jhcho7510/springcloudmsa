@@ -33,6 +33,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 //        http.authorizeRequests().antMatchers("/h2-console").permitAll();
         http.authorizeRequests().antMatchers("/actuator/**").permitAll();
         http.authorizeRequests().antMatchers("/health_check/**").permitAll();
+        http.authorizeRequests().antMatchers("/welcome/**").permitAll();
         http.authorizeRequests().antMatchers("/**")
                 .hasIpAddress(env.getProperty("gateway.ip")) // <- IP 변경
                 .and()
