@@ -15,7 +15,8 @@ token:
   secret: '{cipher}AQAmC61v4+8j3zcwyhiNlq7qdrRXxC+DysD6gMyGCLXamU8Tln/zfjiNIl4TUYJhNsc6k/3Qjsjf6qsj0rye9dxXBfDdLtcVZvFEv0+HgK8Ess2ppbULYZEmXtl67BMjaiRS2+F2xs+smPtozLFr9c+hPghqo2cCEpnPOwAxYj5s1AMcXvmKzo35REsn8rVi5EqWEG478DCbRDMVb4miSx6wQBS3chNx+tD2ixJwtmeAbN6a0j4tpDXn5sjTiTU/e8+CY/8CiPJHcXS6HQ23Gc+ryD1o9MuNtCWRqMF10uSjFZqLN2IivQJB3tN540pYwnQP5ufLTNyxCo9KVOlSZodXdF5DLTh4tbBoWCwWT66ZKJWV1E49svREbJnfVKHs1jmbRgLaHBzgR20LrvCv2KjP'
 
 gateway:
-  ip: 192.168.25.57
+  ip: 172.18.0.5
+  # ip: 192.168.25.57 -> 로컬IP
 
 order_service:
   # url: http://127.0.0.1:8000/order-service/%s/orders 

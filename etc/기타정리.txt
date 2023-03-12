@@ -93,10 +93,33 @@ create table orders (
       MariaDB [(none)]> create database mydb;
 
   2. user-service의 Dockerfile 내용
-    - FROM openjdk:17-ea-11-jdk-slim
+    - Dockerfile 내용
+      FROM openjdk:17-ea-11-jdk-slim
       VOLUME /tmp
       COPY target/user-service-1.0.jar UserService.jar
       ENTRYPOINT ["java", "-jar", "UserService.jar"]      
+    - 이미지 생성 및 docker hub에 push
+      . docker build --tag=jhcho7510/user-service:1.0 .  
+        (. docker build -t jhcho7510/user-service:1.0 .  )
+      . docker push jhcho7510/user-service:1.0
+
+    - 컨테이너 기동
+      docker run -d --network ecommerce-network \
+      --name user-service \
+      -e "spring.cloud.config.uri=http://config-service:8888" \
+      -e "spring.rabbitmq.host=rabbitmq" \
+      -e "spring.zipkin.base-url=http://zipkin:9411" \
+      -e "eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka/" \
+      -e "logging.file=/api-logs/users-ws.log" \
+      jhcho7510/user-service:1.0
+
+    - 로그확인
+      . docker logs 컨테이너명[user-service]  
+      . docker logs -f 컨테이너명[user-service] -> 실시간으로 로그를 확인 
+
+
+
+
   
   3. maven Testcode 생략하고 빌드하기
     - mvn clean compile package -DskipTests=true
@@ -106,3 +129,174 @@ create table orders (
     - docker build -t jhcho7510/user-service:1.0 . --> 이미지를 빌드 처리
     - docker push jhcho7510/user-service:1.0  --> 생성한 이미지를 Docker hub사이트에 업로드
     - docker push jhcho7510/user-service:1.0  --> Docker hub사이트의 이미지를 다운로드    
+
+  5. docker 컨테이너 삭제와 불필요한 리소스 삭제
+    - docker system prune  
+  
+  6. docker network
+    - docker network ls 확인    
+    - docker network create --gateway 172.18.0.1 --subnet 172.18.0.0/16 ecommerce-network 생성
+    - docker network inspect ecommerce-network 네트워크의 상세정보 확인
+
+  7. docker rabbitmq 컨테이너 등록
+    - 컨테이너 기동
+      docker run -d --name rabbitmq --network ecommerce-network \
+      -p 15672:15672 -p 5672:5672 -p 15671:15671 -p 5671:5671 -p 4369:4369 \
+      -e RABBITMQ_DEFAULT_USER=guest \
+      -e RABBITMQ_DEFAULT_PASS=guest rabbitmq:management    
+
+  8. docker config-service 컨테이너/이미지 생성
+    - docker image 생성 
+      docker build -t jhcho7510/config-service:1.0 .   
+
+    - docker image 및 컨테이너 생성
+      docker run -d -p 8888:8888 --network ecommerce-network \
+      -e "spring.rabbitmq.host=rabbitmq" \
+      -e "spring.profiles.active=default" \
+      --name config-service jhcho7510/config-service:1.0
+
+    - docker 로그 확인
+      docker logs [container명 또는 container ID]      
+    - docker 컨테이너 중지
+      docker stop [container명 또는 container ID]      
+
+  9. docker discoveryservice 컨테이너/이미지 생성 및 기동
+    - Dockerfile
+      FROM openjdk:17-ea-11-jdk-slim
+      VOLUME /tmp
+      COPY target/discoveryservice-1.0.jar DiscoveryService.jar
+      ENTRYPOINT ["java","-jar","DiscoveryService.jar"]
+    - discoveryservice 이미지 생성
+      docker build --tag=jhcho7510/discovery-service:1.0 . 
+    - docker hub에 이미지 푸시  
+      docker push jhcho7510/discovery-service:1.0    
+      docker push jhcho7510/config-service:1.0 (config-service 푸시)
+    - docker 컨테이너 생성 및 기동
+      docker run -d -p 8761:8761 --network ecommerce-network \
+      -e "spring.cloud.config.uri=http://config-service:8888" \
+      --name discovery-service jhcho7510/discovery-service:1.0             
+    - docker log 확인
+      docker logs discover-service  
+
+  10. docker apigateway 컨테이너/이미지 생성 및 기동
+    - Dockerfile 
+      FROM openjdk:17-ea-11-jdk-slim
+      VOLUME /tmp
+      COPY target/apigateway-service-1.0.jar ApiGatewayService.jar
+      ENTRYPOINT ["java","-jar","ApiGatewayService.jar"]
+    - apigateway 이미지 생성
+      docker build --tag=jhcho7510/apigateway-service:1.0 . 
+      (docker build -t jhcho7510/apigateway-service:1.0 . )
+    - docker hub에 이미지 푸시  
+      docker push jhcho7510/apigateway-service:1.0          
+    - docker 컨테이너 생성 및 기동
+      docker run -d -p 8000:8000 --network ecommerce-network \
+      -e "spring.cloud.config.uri=http://config-service:8888" \
+      -e "spring.rabbitmq.host=rabbitmq" \
+      -e "eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka/" \
+      --name apigateway-service \
+      jhcho7510/apigateway-service:1.0
+
+  11. docker mariadb 컨테이너/이미지 생성 및 기동
+    - Dockerfile
+      FROM mariadb
+      ENV MYSQL_ROOT_PASSWORD test1357
+      ENV MYSQL_DATABASE MYSQL_DATABASE
+      COPY ./mysql_data/mysql /var/lib/mysql
+      EXPOSE 3306
+      ENTRYPOINT ["mysqld", "--user=root"]    
+    - mariadb 이미지 생성('my_mariadb'명으로 이미지 생성)
+      docker build -t jhcho7510/my-mariadb:1.0 .  
+    - docker 컨테이너 생성 및 기동
+      docker run -d -p 3306:3306  --network ecommerce-network --name mariadb jhcho7510/my-mariadb:1.0
+    - docker 컨테이너에 접속
+      docker exec -it mariadb /bin/bash  
+    - 컨테이너 mariadb 사용
+      . mysql -hlocalhost -uroot -p 
+      . test1357
+      . show databases
+      . use mydb[데이터베이스명]
+      . show tables;
+      . grant all privileges on *.* to 'root'@'%' identified by 'test1357';
+      . flush privileges
+      . exit
+
+  12. docker kafak + zookeeper
+    - kafka, zookeeper 참조 git uri 및 실행
+      . https://github.com/wurstmeister/kafka-docker
+      . git clone https://github.com/wurstmeister/kafka-docker.git       
+    
+    - docker-compose 파일 기동
+      docker-compose -f docker-compose-single-broker.yml up -d  / 정지할때는 up 대신 down   
+
+  13. docker zipkin 
+    - docker run -d -p 9411:9411 \
+      --network ecommerce-network \
+      --name zipkin \
+      openzipkin/zipkin
+  
+  . docker logs 컨테이너명(zipkin)    
+
+  14. docker prometheus / grafana
+    - prometheus
+      docker run -d -p 9090:9090 \
+      --network ecommerce-network \
+      --name prometheus \
+      -v /Users/junhyoungcho/prometheus-2.42.0.darwin-amd64/prometheus.yml:/etc/prometheus/prometheus.yml \
+      prom/prometheus 
+
+    - Grafana
+      docker run -d -p 3000:3000 \
+      --network ecommerce-network \
+      --name grafana \
+      grafana/grafana 
+  
+  15. docker order-service      
+    - Dockerfile 내용
+      FROM openjdk:17-ea-11-jdk-slim
+      VOLUME /tmp
+      COPY target/user-service-1.0.jar OrderService.jar
+      ENTRYPOINT ["java", "-jar", "OrderService.jar"]
+    
+    - 이미지 생성
+      docker build -t jhcho7510/order-service:1.0 .
+    - docker hub에 푸시
+      docker push jhcho7510/order-service
+
+    - docker 컨테이너 기동
+      docker run -d --network ecommerce-network \
+      --name order-service \
+      -e "spring.cloud.config.uri=http://config-service:8888" \
+      -e "spring.rabbitmq.host=rabbitmq" \
+      -e "spring.zipkin.base-url=http://zipkin:9411" \
+      -e "eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka/" \
+      -e "spring.datasource.url=jdbc:mariadb://mariadb:3306/mydb" \
+      -e "logging.file=/api-logs/orders-ws.log" \
+      jhcho7510/order-service:1.0
+
+  16. docker catalog-service
+    - Dockerfile 내용
+      FROM openjdk:17-ea-11-jdk-slim
+      VOLUME /tmp
+      COPY target/catalog-service-1.0.jar CatalogService.jar
+      ENTRYPOINT ["java", "-jar", "CatalogService.jar"]
+    
+    - 이미지 생성
+      docker build -t jhcho7510/catalog-service:1.0 .
+    - docker hub에 이미지 푸시  
+      docker push jhcho7510/catalog-service:1.0
+    
+    - docker 컨테이너 기동(없는 환경정보를 설정하고 컨테이너를 기동하려고하면 오류남.)
+      docker run -d --network ecommerce-network \
+      --name catalog-service \
+      -e "eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka/" \
+      -e "logging.file=/api-logs/catalogs-ws.log" \
+      jhcho7510/catalog-service:1.0   
+
+
+         
+
+
+
+
+

@@ -9,8 +9,8 @@
 encrypt:
   #  key: abcdefghijklmnopqrstuvwxyz0123456789
   key-store:
-    location: file://${user.home}/springcloudmsa/keystore/apiEncryptionKey.jks
-    #    location: file:/apiEncryptionKey.jks
+    # 로컬경로 : location: file://${user.home}/springcloudmsa/keystore/apiEncryptionKey.jks
+    location: file:/apiEncryptionKey.jks # 컨테이너 내의 'apiEncryptionKey.jks' 경로
     #    location: file:///apiEncryptionKey.jks
     password: test1234
     alias: apiEncryptionKey

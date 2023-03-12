@@ -4,7 +4,11 @@ server:
 spring:
   application:
     name: discoveryservice
-
+  # docker에서 사용하기 위해 아래 내용 기술 - 시작
+  cloud:
+    config:
+      uri: http://127.0.0.1:8888
+  # 종료
 eureka:
   client:
     register-with-eureka: false
